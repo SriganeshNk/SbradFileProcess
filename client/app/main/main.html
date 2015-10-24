@@ -1,0 +1,38 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<header class="hero-unit" id="banner">
+  <div class="container">
+    <div class="row">
+      <div id="uploader" ng-controller="MainCtrl">
+        <div class="page-header">
+          <h1>Radiology Reports Uploader</h1>
+        </div>
+        <div class="col-md-12" style="text-align: center">
+            <p>Upload multiple files at the same time.</a>.</p>
+
+            <div class="well">
+              <div>
+                <div style="float:right;">
+                  <button class="btn btn-primary" ng-click="btn_upload()">Upload</button>
+                  <button class="btn btn-danger" ng-click="btn_clean()">Remove all</button>
+                </div>
+                <input class="btn btn-success" type="file" id="file1" multiple/>
+              </div>
+              <div ng-repeat="file in files" style="margin-top: 20px;border-bottom-color: antiquewhite;border-bottom-style: double;">
+                <div><span>{{file.name}}</span><div style="float:right;"><span>{{file.humanSize}}</span>
+                  <a ng-click="btn_remove(file)" title="Remove from list to be uploaded"><i class="icon-remove"></i></a></div>
+                </div>
+                <progress style="width:400px;" value="{{file.loaded}}" max="{{file.size}}"></progress>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<footer class="footer">
+  <div class="container">
+      <p>Angular Fullstack v2.0.13 </p>
+  </div>
+</footer>
