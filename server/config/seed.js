@@ -5,7 +5,7 @@
 
 'use strict';
 
-var Thing = require('../api/thing/thing.model');
+var Thing = require('../api/files/thing.model');
 
 
 Thing.find({}).remove(function() {

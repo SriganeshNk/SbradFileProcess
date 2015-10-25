@@ -7,7 +7,7 @@ angular.module('incIndexApp', [
   'ngRoute',
   'btford.socket-io',
   'ui.bootstrap',
-  'ui.uploader'
+  'angularFileUpload'
 ])
   .config(function ($routeProvider, $locationProvider) {
     $routeProvider

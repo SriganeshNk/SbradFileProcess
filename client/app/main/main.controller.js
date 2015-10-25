@@ -1,58 +1,57 @@
 'use strict';
 
 angular.module('incIndexApp')
-  .controller('MainCtrl', function ($scope, $http, $log, socket, uiUploader) {
-    $scope.awesomeThings = [];
+    .controller('MainCtrl', function ($scope, $http, $log, socket, FileUploader) {
 
-    $http.get('/api/things').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', $scope.awesomeThings);
+        var uploader = $scope.uploader = new FileUploader({
+            url: 'http://localhost:9000/api/files/'
+        });
+
+        // FILTERS
+
+        uploader.filters.push({
+            name: 'customFilter',
+            fn: function(item /*{File|FileLikeObject}*/, options) {
+                return this.queue.length < 10;
+            }
+        });
+
+        // CALLBACKS
+
+        uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+            console.info('onWhenAddingFileFailed', item, filter, options);
+        };
+        uploader.onAfterAddingFile = function(fileItem) {
+            console.info('onAfterAddingFile', fileItem);
+        };
+        uploader.onAfterAddingAll = function(addedFileItems) {
+            console.info('onAfterAddingAll', addedFileItems);
+        };
+        uploader.onBeforeUploadItem = function(item) {
+            console.info('onBeforeUploadItem', item);
+        };
+        uploader.onProgressItem = function(fileItem, progress) {
+            console.info('onProgressItem', fileItem, progress);
+        };
+        uploader.onProgressAll = function(progress) {
+            console.info('onProgressAll', progress);
+        };
+        uploader.onSuccessItem = function(fileItem, response, status, headers) {
+            console.info('onSuccessItem', fileItem, response, status, headers);
+        };
+        uploader.onErrorItem = function(fileItem, response, status, headers) {
+            console.info('onErrorItem', fileItem, response, status, headers);
+        };
+        uploader.onCancelItem = function(fileItem, response, status, headers) {
+            console.info('onCancelItem', fileItem, response, status, headers);
+        };
+        uploader.onCompleteItem = function(fileItem, response, status, headers) {
+            console.info('onCompleteItem', fileItem, response, status, headers);
+        };
+        uploader.onCompleteAll = function() {
+            console.info('onCompleteAll');
+        };
+
+        console.info('uploader', uploader);
+
     });
-
-    $scope.addThing = function() {
-      if($scope.newThing === '') {
-        return;
-      }
-      $http.post('/api/things', { name: $scope.newThing });
-      $scope.newThing = '';
-    };
-
-    $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
-    };
-
-    $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
-    });
-
-    $scope.btn_remove = function(file) {
-      $log.info('deleting=' + file);
-      uiUploader.removeFile(file);
-    };
-    $scope.btn_clean = function() {
-      uiUploader.removeAll();
-    };
-    $scope.btn_upload = function() {
-      $log.info('uploading...');
-      uiUploader.startUpload({
-        url: 'http://realtica.org/ng-uploader/demo.html',
-        concurrency: 2,
-        onProgress: function(file) {
-          $log.info(file.name + '=' + file.humanSize);
-          $scope.$apply();
-        },
-        onCompleted: function(file, response) {
-          $log.info(file + 'response' + response);
-        }
-      });
-    };
-    $scope.files = [];
-    var element = document.getElementById('file1');
-    element.addEventListener('change', function(e) {
-      var files = e.target.files;
-      uiUploader.addFiles(files);
-      $scope.files = uiUploader.getFiles();
-      $scope.$apply();
-    });
-
-  });
