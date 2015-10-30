@@ -18,6 +18,9 @@
     <!-- build:css({.tmp,client}) app/app.css -->
     <link rel="stylesheet" href="app/app.css">
       <!-- injector:css -->
+      <link rel="stylesheet" href="app/app.css">
+      <link rel="stylesheet" href="app/index/index.css">
+      <link rel="stylesheet" href="app/transform/transform.css">
       <!-- endinjector -->
     <!-- endbuild -->
   </head>
@@ -63,8 +66,12 @@
         <!-- build:js({.tmp,client}) app/app.js -->
         <script src="app/app.js"></script>
           <!-- injector:js -->
-          <script src="app/main/main.controller.js"></script>
-          <script src="app/main/main.js"></script>
+          <script src="app/index/index.controller.js"></script>
+          <script src="app/index/index.js"></script>
+          <script src="app/transform/transform.controller.js"></script>
+          <script src="app/transform/transform.js"></script>
+          <script src="app/upload/upload.controller.js"></script>
+          <script src="app/upload/upload.js"></script>
           <script src="components/modal/modal.service.js"></script>
           <script src="components/navbar/navbar.controller.js"></script>
           <script src="components/socket/socket.service.js"></script>

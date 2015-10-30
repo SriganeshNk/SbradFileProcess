@@ -5,11 +5,10 @@ var controller = require('./thing.controller');
 
 var router = express.Router();
 
-router.get('/', controller.index);
-router.get('/:id', controller.show);
+router.get('/getFiles', controller.getFiles);
 router.post('/', controller.upload);
-router.put('/:id', controller.update);
-router.patch('/:id', controller.update);
+router.post('/transformFile', controller.transformFile);
+router.post('/deleteFile', controller.deleteFile);
 router.delete('/:id', controller.destroy);
 
 module.exports = router;

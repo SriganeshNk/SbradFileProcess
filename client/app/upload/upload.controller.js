@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('incIndexApp')
-    .controller('MainCtrl', function ($scope, $http, $log, socket, FileUploader) {
+    .controller('UploadCtrl', function ($scope, $http, $log, socket, FileUploader) {
 
         var uploader = $scope.uploader = new FileUploader({
             url: 'http://localhost:9000/api/files/'

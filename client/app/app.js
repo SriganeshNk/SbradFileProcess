@@ -9,11 +9,11 @@ angular.module('incIndexApp', [
   'ui.bootstrap',
   'angularFileUpload'
 ])
-  .config(function ($routeProvider, $locationProvider) {
-    $routeProvider
-      .otherwise({
-        redirectTo: '/'
-      });
+    .config(function ($routeProvider, $locationProvider) {
+      $routeProvider
+          .otherwise({
+            redirectTo: '/upload'
+          });
 
-    $locationProvider.html5Mode(true);
-  });
+      $locationProvider.html5Mode(true);
+    });

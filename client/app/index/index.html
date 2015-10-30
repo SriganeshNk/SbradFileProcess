@@ -5,15 +5,12 @@
   <div class="row">
 
     <div class="col-md-3">
-      <h3>Select files</h3>
-      <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
-      Multiple
-      <input type="file" nv-file-select="" uploader="uploader" multiple  /><br/>
+      <h3>Index Files</h3>
     </div>
 
     <div class="col-md-9" style="margin-bottom: 40px">
 
-      <h3>Upload queue</h3>
+      <h3>Indexing queue</h3>
       <p>Queue length: {{ uploader.queue.length }}</p>
 
       <table class="table">
@@ -42,7 +39,7 @@
           </td>
           <td nowrap>
             <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-              <span class="glyphicon glyphicon-upload"></span> Upload
+              <span class="glyphicon glyphicon-upload"></span> Index
             </button>
             <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
               <span class="glyphicon glyphicon-ban-circle"></span> Cancel
@@ -63,7 +60,7 @@
           </div>
         </div>
         <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
-          <span class="glyphicon glyphicon-upload"></span> Upload all
+          <span class="glyphicon glyphicon-upload"></span> Index all
         </button>
         <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
           <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
