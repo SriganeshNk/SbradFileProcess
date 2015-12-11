@@ -34,12 +34,12 @@
             <button type="button" class="btn btn-success btn-xs" ng-click="transform(item)" ng-disabled="item.isTransforming || item.isSuccess">
               <span class="glyphicon glyphicon-upload"></span> Transform
             </button>
-            <button type="button" class="btn btn-warning btn-xs" ng-click="cancel(item)" ng-disabled="!item.isTransforming">
+            <!--button type="button" class="btn btn-warning btn-xs" ng-click="cancel(item)" ng-disabled="!item.isTransforming">
               <span class="glyphicon glyphicon-ban-circle"></span> Cancel
             </button>
             <button type="button" class="btn btn-danger btn-xs" ng-click="remove(item)">
               <span class="glyphicon glyphicon-trash"></span> Remove
-            </button>
+            </button-->
           </td>
         </tr>
         </tbody>
@@ -55,12 +55,12 @@
         <button type="button" class="btn btn-success btn-s" ng-click="transformAll()" ng-disabled="!getNotTransformedItems().length">
           <span class="glyphicon glyphicon-upload"></span> Transform all
         </button>
-        <button type="button" class="btn btn-warning btn-s" ng-click="cancelAll()" ng-disabled="!isTransforming">
+        <!--button type="button" class="btn btn-warning btn-s" ng-click="cancelAll()" ng-disabled="!isTransforming">
           <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
         </button>
         <button type="button" class="btn btn-danger btn-s" ng-click="removeAll()" ng-disabled="!fileQueue">
           <span class="glyphicon glyphicon-trash"></span> Remove all
-        </button>
+        </button-->
       </div>
 
     </div>

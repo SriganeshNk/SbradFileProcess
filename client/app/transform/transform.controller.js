@@ -14,8 +14,9 @@ angular.module('incIndexApp')
                     var parsedResponse = JSON.parse(result);
                     console.log("Get Files POSITIVE RESPONSE ");
                     for (var i = 0; i < parsedResponse.length; i++) {
-                        $scope.files.push({name: parsedResponse[i].name, size: parsedResponse[i].size,
-                            isTransforming: false, isSuccess: false, isError: false})
+                        console.log("Is Success: " + parsedResponse[i].processed + "\n" + parsedResponse[i]);
+                        $scope.files.push({name: parsedResponse[i].name, size: parsedResponse[i].size, mtime: parsedResponse[i].time,
+                            isTransforming: false, isSuccess: parsedResponse[i].processed, isError: false})
                     }
                     $scope.fileQueue = $scope.files.length;
                 })
@@ -68,12 +69,15 @@ angular.module('incIndexApp')
 
         $scope.transformAll = function(){
             $scope.files.forEach(function(t){
-                var deferred = $q.defer();
                 $scope.isTransforming = true;
-                $scope.transform(t);
-            }).then(function(result){
-                $scope.isTransforming = false;
-                console.log("Finished Transforming all the files " + result);
+                $scope.transform(t).then(
+                    function(result){
+                        console.log("Transformed " + result);
+                    },
+                    function(error) {
+                        console.log("Something went wrong with the transformation. " + error);
+                    }
+                );
             });
         };
 

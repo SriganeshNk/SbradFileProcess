@@ -1,57 +1,88 @@
 'use strict';
 
 angular.module('incIndexApp')
-    .controller('IndexCtrl', function ($scope, $http, $log, socket, FileUploader) {
+    .controller('IndexCtrl', function ($scope, $http, $q) {
 
-        var uploader = $scope.uploader = new FileUploader({
-            url: 'http://localhost:9000/api/files/'
-        });
+        $scope.files = [];
+        $scope.fileQueue = 0;
+        $scope.isIndexing = false;
 
-        // FILTERS
+        $scope.getFiles = function() {
+            $http.get('/api/files/getFiles')
+                .success(
+                function(result) {
+                    var parsedResponse = JSON.parse(result);
+                    console.log("Get Files POSITIVE RESPONSE ");
+                    for (var i = 0; i < parsedResponse.length; i++) {
+                        console.log("Is Success: " + parsedResponse[i].indexed + "\n" + parsedResponse[i]);
+                        $scope.files.push({name: parsedResponse[i].name, size: parsedResponse[i].size, mtime: parsedResponse[i].time,
+                            isTransforming: false, isSuccess: parsedResponse[i].indexed, isError: false})
+                    }
+                    $scope.fileQueue = $scope.files.length;
+                })
+                .error(
+                function(result) {
+                    console.log("Get Files ERROR RECEIVED " + result );
+                });
+        };
 
-        uploader.filters.push({
-            name: 'customFilter',
-            fn: function(item /*{File|FileLikeObject}*/, options) {
-                return this.queue.length < 10;
+        $scope.index = function(item){
+            item.isTransforming = true;
+            console.log("Index File called");
+            var deferred = $q.defer();
+            $http.post('/api/files/indexFile', item)
+                .success(
+                function(result) {
+                    item.isTransforming = false;
+                    item.isSuccess = true;
+                    item.isError = false;
+                    deferred.resolve({
+                        status : result.status
+                    });
+                    console.log("Indexing done!");
+                })
+                .error(
+                function(result){
+                    item.isSuccess = false;
+                    item.isError = true;
+                    item.isTransforming = false;
+                    deferred.reject(result);
+                    console.log("Error in Indexing the data: " + result);
+                });
+            return deferred.promise;
+        };
+
+        $scope.indexAll = function(){
+            $scope.files.forEach(function(t){
+                $scope.isIndexing = true;
+                $scope.index(t).then(
+                    function(result){
+                        console.log("Indexed " + result);
+                    },
+                    function(error) {
+                        console.log("Something went wrong with the indexing. " + error);
+                    }
+                );
+            });
+        };
+
+        $scope.getNotIndexedItems = function(){
+            var temp =[];
+            $scope.files.forEach(function(t){
+                if (!t.isSuccess){
+                    temp.push(t);
+                }
+            });
+            return temp;
+        };
+
+        $scope.$watch('files',
+            function watchQueue(newVal, oldVal){
+                console.log("WATCH CALLED" + newVal);
+                $scope.fileQueue = newVal.length;
             }
-        });
+        );
 
-        // CALLBACKS
-
-        uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
-            console.info('onWhenAddingFileFailed', item, filter, options);
-        };
-        uploader.onAfterAddingFile = function(fileItem) {
-            console.info('onAfterAddingFile', fileItem);
-        };
-        uploader.onAfterAddingAll = function(addedFileItems) {
-            console.info('onAfterAddingAll', addedFileItems);
-        };
-        uploader.onBeforeUploadItem = function(item) {
-            console.info('onBeforeUploadItem', item);
-        };
-        uploader.onProgressItem = function(fileItem, progress) {
-            console.info('onProgressItem', fileItem, progress);
-        };
-        uploader.onProgressAll = function(progress) {
-            console.info('onProgressAll', progress);
-        };
-        uploader.onSuccessItem = function(fileItem, response, status, headers) {
-            console.info('onSuccessItem', fileItem, response, status, headers);
-        };
-        uploader.onErrorItem = function(fileItem, response, status, headers) {
-            console.info('onErrorItem', fileItem, response, status, headers);
-        };
-        uploader.onCancelItem = function(fileItem, response, status, headers) {
-            console.info('onCancelItem', fileItem, response, status, headers);
-        };
-        uploader.onCompleteItem = function(fileItem, response, status, headers) {
-            console.info('onCompleteItem', fileItem, response, status, headers);
-        };
-        uploader.onCompleteAll = function() {
-            console.info('onCompleteAll');
-        };
-
-        console.info('uploader', uploader);
+        $scope.getFiles();
 
     });

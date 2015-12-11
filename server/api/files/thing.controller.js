@@ -12,7 +12,14 @@
 var _ = require('lodash');
 var fs = require('fs');
 var request = require('request');
-var Thing = require('./thing.model');
+var ProcessedFile = require('./thing.model');
+var txtPath = "C:\\Users\\Sriganesh\\Desktop\\Semester3\\advancedProject\\FileProcessFlask\\";
+var demoPath = "C:\\Users\\Sriganesh\\workspace\\sbrad\\WebContent\\WEB-INF\\lib\\lucene_demo_sriganesh.jar";
+var corePath = "C:\\Users\\Sriganesh\\workspace\\sbrad\\WebContent\\WEB-INF\\lib\\lucene-core-3.0.3-dev.jar";
+var mySQlPath = "C:\\Users\\Sriganesh\\workspace\\sbrad\\WebContent\\WEB-INF\\lib\\mysql-connector-java-5.1.18-bin.jar";
+var IndexPath = "C:\\Users\\Sriganesh\\Desktop\\Semester3\\advancedProject\\RRIndex_MRN";
+var HtmlPath = "C:\\Users\\Sriganesh\\Desktop\\Semester3\\advancedProject\\HTMLDir";
+var mainClass = "org.apache.lucene.demo.IndexFiles";
 
 // Get the list of Files
 exports.getFiles = function(req, res) {
@@ -76,9 +83,8 @@ exports.upload = function(req, res){
         // removing footer '\r\n'--boundary--\r\n' = (boundary.length + 8)
         body = body.slice(0, body.length - (boundary.length + 8));
         console.log('final file size: ' + body.length);
-        fs.writeFileSync('C:\\Users\\Sriganesh\\Desktop\\Semester3\\advancedProject\\FileProcessFlask\\' + filename, body, 'utf-8');
+        fs.writeFileSync(txtPath + filename, body, 'utf-8');
         console.log('done');
-        // res.redirect('back');
         return res.json(200, {'answer': 'File transfer completed'});
     })
 };
@@ -86,12 +92,12 @@ exports.upload = function(req, res){
 // Transforms the file
 exports.transformFile = function(req, res) {
     console.log("transformFile called");
-    request.post({url:'http://localhost:5000/transformFile', form: req.body},
+    request.post({url:'http://localhost:5000/transformFile', form: req.body },
         function(err, response, body){
             if (!err && response.statusCode == 200) {
                 return res.json(200, body);
             } else{
-                return res.json(404, error);
+                return res.json(404, err);
             }
         }
     );
@@ -112,7 +118,26 @@ exports.deleteFile = function(req, res) {
     //return res.json(200, {'status': 'OK'});
 };
 
-// Deletes a thing from the DB.
+
+exports.indexFile = function(req, res) {
+    console.log("indexing file called");
+    var cmd = "java";
+    console.log("Starting Indexing for HTML files in " + req.body.name);
+    var args = ["-cp", demoPath+";"+corePath+";"+mySQlPath, mainClass, IndexPath, HtmlPath, HtmlPath];
+    var spawn = require('child_process').spawnSync;
+    var child = spawn(cmd, args);
+    console.log("Indexing exited with status", child.status);
+    console.log("Status" + child.stdout.toString());
+    if (child.status == 0) {
+        res.send(200, {'status':'OK'});
+    }
+    else {
+        res.send(404, {'status':'NOT OK'});
+    }
+    //res.send(200,{'status':'OK'});
+};
+
+/* Deletes a thing from the DB.
 exports.destroy = function(req, res) {
     Thing.findById(req.params.id, function (err, thing) {
         if(err) { return handleError(res, err); }
@@ -123,7 +148,7 @@ exports.destroy = function(req, res) {
         });
     });
 };
-
+*/
 function handleError(res, err) {
     return res.send(500, err);
 }

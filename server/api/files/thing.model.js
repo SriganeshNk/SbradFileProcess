@@ -3,10 +3,10 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var ThingSchema = new Schema({
+var ProcessedFileSchema = new Schema({
   name: String,
-  info: String,
-  active: Boolean
+  time: String,
+  processed: Boolean
 });
 
-module.exports = mongoose.model('Thing', ThingSchema);
+module.exports = mongoose.model('ProcessedFile', ProcessedFileSchema);
